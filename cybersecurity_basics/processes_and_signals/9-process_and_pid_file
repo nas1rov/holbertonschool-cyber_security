@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Script that creates a PID file and handles SIGTERM, SIGINT, and SIGQUIT
+
+# 1. Create the PID file
+echo $$ > /tmp/myscript.pid
+
+# Function to clean up the PID file and exit
+cleanup_and_exit() {
+    rm /tmp/myscript.pid
+    exit
+}
+
+# 2. Trap SIGTERM: Display message and clean up/terminate
+trap 'echo "I hate the kill command"; cleanup_and_exit' SIGTERM
+
+# 3. Trap SIGINT: Display message (triggered by Ctrl+C)
+trap 'echo "Y U no love me?!"' SIGINT
+
+# 4. Trap SIGQUIT: Clean up/terminate (triggered by Ctrl+\)
+trap 'cleanup_and_exit' SIGQUIT
+
+# 5. Execute the infinite loop
+while true
+do
+    echo "To infinity and beyond"
+    sleep 2
+done
