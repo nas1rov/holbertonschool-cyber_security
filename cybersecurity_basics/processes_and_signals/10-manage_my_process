@@ -1,36 +1,35 @@
 #!/usr/bin/env bash
-# Init script to manage the manage_my_process daemon
+# manage_my_process skriptini idarə edən init skripti
 
-# Check for the correct number of arguments
 if [ $# -ne 1 ]; then
     echo "Usage: manage_my_process {start|stop|restart}"
     exit 1
 fi
 
-ACTION=$1
+PID_FILE="/tmp/my_process.pid"
 
-case "$ACTION" in
+case "$1" in
     start)
-        # Start the process in the background (&)
         ./manage_my_process &
-        # Save the PID of the last background process to the pid file
-        echo $! > /var/run/my_process.pid
+        echo $! > "$PID_FILE"
         echo "manage_my_process started"
         ;;
     stop)
-        # Kill the process using the stored PID
-        kill "$(cat /var/run/my_process.pid)"
-        # Remove the PID file
-        rm /var/run/my_process.pid
-        echo "manage_my_process stopped"
+        if [ -f "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")"
+            rm "$PID_FILE"
+            echo "manage_my_process stopped"
+        fi
         ;;
     restart)
-        # Stop first
-        kill "$(cat /var/run/my_process.pid)"
-        rm /var/run/my_process.pid
-        # Then start
+        # Əvvəl dayandırırıq
+        if [ -f "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE")"
+            rm "$PID_FILE"
+        fi
+        # Sonra yenidən başladırıq
         ./manage_my_process &
-        echo $! > /var/run/my_process.pid
+        echo $! > "$PID_FILE"
         echo "manage_my_process restarted"
         ;;
     *)
