@@ -1,16 +1,17 @@
 #!/bin/bash
 
-n=$1
+# Assign the first argument to a variable
+decimal=$1
 
-# (opsional) input yoxlaması
-if [ "$n" -lt 0 ] || [ "$n" -gt 255 ]; then
-  echo "Error: input must be 0-255"
-  exit 1
-fi
+# Initialize an empty string for the binary output
+binary=""
 
-# 8-bit binary output
-for i in {7..0}; do
-  echo -n $(( (n >> i) & 1 ))
+# Loop from bit position 7 down to 0
+for ((i=7; i>=0; i--)); do
+    # Right-shift the number by 'i' positions and check the last bit
+    bit=$(( (decimal >> i) & 1 ))
+    binary="${binary}${bit}"
 done
 
-echo
+# Output the final 8-bit string
+echo "$binary"
