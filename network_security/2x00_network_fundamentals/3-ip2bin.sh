@@ -1,9 +1,2 @@
 #!/bin/bash
-IFS='.' read -r o1 o2 o3 o4 <<< "$1"
-
-b1=$(printf "%08d" $(echo "obase=2; $o1" | bc))
-b2=$(printf "%08d" $(echo "obase=2; $o2" | bc))
-b3=$(printf "%08d" $(echo "obase=2; $o3" | bc))
-b4=$(printf "%08d" $(echo "obase=2; $o4" | bc))
-
-echo "${b1}.${b2}.${b3}.${b4}"
+IFS=. read -ra o <<< "$1"; printf "%08d.%08d.%08d.%08d\n" $(echo "obase=2;${o[0]}"|bc) $(echo "obase=2;${o[1]}"|bc) $(echo "obase=2;${o[2]}"|bc) $(echo "obase=2;${o[3]}"|bc)
